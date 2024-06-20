@@ -1,0 +1,58 @@
+    select prefix_serial_number, prefix_date, count(imsi) as total_imsi, count(distinct imsi) as distinct_imsi
+    from (
+        select s.prefix_serial_number, s.prefix_date, 'imsi' as type, s.imsi
+        from v_imsi_temp p
+        right join v_imsi_temp s
+        ON
+        p.prefix_date = s.prefix_date
+        AND p.imsi = s.imsi
+        AND p.prefix_date between '2024-04-01' and '2024-04-30' 
+        and p.prefix_serial_number = '1675-1832-6001'
+        where s.prefix_date between '2024-04-01' and '2024-04-30'
+        AND s.prefix_serial_number = '9b90-d860-9d10'
+        AND p.prefix_serial_number is null
+        union all
+        select s.prefix_serial_number, s.prefix_date, 'timsi' as type, s.timsi
+        from v_timsi_temp p
+        right join v_timsi_temp s
+        ON
+        p.prefix_date = s.prefix_date
+        AND p.timsi = s.timsi
+        AND p.prefix_date between '2024-04-01' and '2024-04-30' 
+        and p.prefix_serial_number = '1675-1832-6001'
+        where s.prefix_date between '2024-04-01' and '2024-04-30'
+        AND s.prefix_serial_number = '9b90-d860-9d10'
+        AND p.prefix_serial_number is null
+    ) as a
+    group by prefix_serial_number, prefix_date
+    order by prefix_serial_number, prefix_date;
+    
+    -- Wifi Totals ROI
+    select prefix_serial_number, prefix_date, count(mac) as total_mac, count(distinct mac) as distinct_mac
+    from (
+        select s.prefix_serial_number, s.prefix_date, 'wifi' as type, s.mac
+        from v_wifi_temp p
+        right join v_wifi_temp s
+        ON
+        p.prefix_date = s.prefix_date
+        AND p.mac = s.mac
+        AND p.prefix_date between '2024-04-01' and '2024-04-30' 
+        and p.prefix_serial_number = '1675-1832-6001'
+        where s.prefix_date between '2024-04-01' and '2024-04-30'
+        AND s.prefix_serial_number = '9b90-d860-9d10'
+        AND p.prefix_serial_number is null
+        union all
+        select s.prefix_serial_number, s.prefix_date, 'bt' as type, s.mac
+        from v_bt_temp p
+        right join v_bt_temp s
+        ON
+        p.prefix_date = s.prefix_date
+        AND p.mac = s.mac
+        AND p.prefix_date between '2024-04-01' and '2024-04-30' 
+        and p.prefix_serial_number = '1675-1832-6001'
+        where s.prefix_date between '2024-04-01' and '2024-04-30'
+        AND s.prefix_serial_number = '9b90-d860-9d10'
+        AND p.prefix_serial_number is null
+    ) as a
+    group by prefix_serial_number, prefix_date
+    order by prefix_serial_number, prefix_date;
